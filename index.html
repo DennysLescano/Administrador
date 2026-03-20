@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Administrador - Restaurante El Camarón de Oro</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>Restaurante El Camarón de Oro</h1>
+    <h2>Panel de Administración</h2>
+
+    <!-- 🔐 Login -->
+    <section id="loginSection" class="card">
+      <h3>Iniciar sesión</h3>
+      <label for="emailInput">Correo electrónico</label>
+      <input type="email" id="emailInput" placeholder="Correo electrónico" autocomplete="off" />
+
+      <label for="passwordInput">Contraseña</label>
+      <input type="password" id="passwordInput" placeholder="Contraseña" autocomplete="off" />
+
+      <button id="loginBtn">Iniciar sesión</button>
+    </section>
+
+   <!-- ✅ Panel Admin -->
+<section id="adminSection" class="card" style="display: none;">
+
+  <!-- 📦 Gestión de Productos -->
+<section class="admin-block">
+  <h3>📦 Gestión de Productos</h3>
+  <div class="button-group">
+    <button id="agregarBtn">➕ Agregar Producto</button>
+    <button id="editarBtn">✏️ Editar</button>
+    <button id="eliminarBtn">🗑️ Eliminar producto</button>
+  </div>
+</section>
+
+      <!-- 🗂 Historial y Reportes -->
+      <section class="admin-block">
+        <h3>🗂 Historial y Reportes</h3>
+        <div class="button-group">
+          <button id="verHistorialBtn">📄 Ver Historial</button>
+          <button id="exportarHistorialBtn">📥 Exportar a Excel</button>
+          <button id="eliminarHistorialBtn">🗑️ Eliminar Historial</button>
+        </div>
+      </section>
+
+      <!-- 📊 Análisis -->
+      <section class="admin-block">
+        <h3>📊 Análisis de Ventas</h3>
+        <div class="button-group">
+          <button id="verRankingBtn">🏆 Ranking más vendidos</button>
+          <button id="verGananciasBtn">📊 Ver ganancias</button>
+        </div>
+      </section>
+
+      <!-- 📈 Dashboard -->
+      <section class="dashboard">
+        <div id="rankingPanel" class="panel">
+          <h3>🏆 Productos más vendidos</h3>
+          <div id="rankingLista">—</div>
+        </div>
+        <div id="chartPanel" class="panel">
+          <h3>💰 Ganancias</h3>
+          <canvas id="chartGanancias" width="600" height="360"></canvas>
+        </div>
+      </section>
+
+      <!-- 🔍 Filtros y Lista -->
+      <section class="admin-block">
+        <h3>🔍 Búsqueda y Lista de Productos</h3>
+        <div id="adminToolbar" class="toolbar">
+          <label for="searchInput">Buscar producto</label>
+          <input type="text" id="searchInput" placeholder="Buscar por nombre o categoría…" autocomplete="off" />
+
+          <label for="sortSelect">Ordenar por</label>
+          <select id="sortSelect">
+            <option value="nombre">Nombre (A-Z)</option>
+            <option value="precio">Precio (desc)</option>
+            <option value="categoria">Categoría (A-Z)</option>
+          </select>
+          <button id="limpiarFiltrosBtn">🧹 Limpiar filtros</button>
+        </div>
+        <h4>Lista de productos</h4>
+        <ul id="listaProductos"></ul>
+      </section>
+
+      <section class="admin-block">
+        <h3>🌐 Cargar Gestór Web</h3>
+        <button onclick="window.location.href='web_admin.html'">🔁 Cargar Gestór Web</button>
+      </section>
+
+      <button id="logoutBtn" class="logout">Cerrar sesión</button>
+    </section>
+  </main>
+
+  <!-- 📅 Modal Selector de Fechas -->
+  <div id="fechaSelector" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); align-items:center; justify-content:center; z-index:2000;">
+    <div style="background:white; padding:20px; border-radius:10px; max-width:300px; width:100%; text-align:center;">
+      <h3>Seleccionar rango de fechas</h3>
+
+      <label for="fechaInicioInput">Inicio:</label>
+      <input type="date" id="fechaInicioInput"><br><br>
+
+      <label for="fechaFinInput">Fin:</label>
+      <input type="date" id="fechaFinInput"><br><br>
+
+      <button id="aplicarFechasBtn">Aplicar</button>
+      <button id="cancelarFechasBtn" style="background:#c0392b; margin-left:5px;">Cancelar</button>
+    </div>
+  </div>
+<!-- ✅ Primero carga la librería -->
+<script src="xlsx.bundle.js"></script>
+
+<!-- ✅ Luego tu script principal -->
+<script type="module" src="admin.js"></script>
+
+</body>
+</html>
+

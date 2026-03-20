@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión Web - El Camarón de Oro</title>
+  <link rel="stylesheet" href="web_admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    /* Loader */
+    #loaderOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .loader {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #3498db;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    /* Accesibilidad: ocultar visualmente labels */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ☰ Botón hamburguesa para móviles -->
+<button id="hamburger" class="hamburger hidden">☰</button>
+<div class="overlay"></div>
+
+<!-- Loader -->
+<div id="loaderOverlay">
+  <div class="loader"></div>
+</div>
+
+<!-- Sidebar -->
+<div id="sidebar" class="sidebar hidden">
+  <h2>Menú</h2>
+  <nav>
+    <button onclick="scrollToSection('productos')"><i class="fas fa-box"></i> Productos</button>
+    <button onclick="scrollToSection('empresa')"><i class="fas fa-building"></i> Empresa</button>
+    <button onclick="scrollToSection('historia')"><i class="fas fa-book-open"></i> Historia</button>
+    <button onclick="scrollToSection('equipo')"><i class="fas fa-users"></i> Equipo</button>
+    <button onclick="scrollToSection('promos')"><i class="fas fa-tags"></i> Promociones</button>
+    <button onclick="scrollToSection('testimonios')"><i class="fas fa-comment"></i> Testimonios</button>
+    <button onclick="scrollToSection('noticias')"><i class="fas fa-newspaper"></i> Noticias</button>
+    <button onclick="scrollToSection('config')"><i class="fas fa-cog"></i> Configuración</button>
+  </nav>
+</div>
+
+<!-- Contenido -->
+<main class="container">
+  <h1>🌊 El Camarón de Oro - Gestor Web</h1>
+
+  <!-- Login -->
+  <section id="loginSection" class="card">
+    <h2>Iniciar sesión</h2>
+    <label for="emailInput" class="sr-only">Correo de administrador</label>
+    <input type="email" id="emailInput" placeholder="Correo de administrador">
+
+    <label for="passwordInput" class="sr-only">Contraseña</label>
+    <input type="password" id="passwordInput" placeholder="Contraseña">
+
+    <button type="button" id="loginBtn">Ingresar</button>
+  </section>
+
+  <!-- Panel principal -->
+  <section id="adminSection" style="display:none;">
+
+    <!-- Productos -->
+    <div class="card" id="productos">
+      <h2>Gestión de Productos</h2>
+      <div class="form-group">
+        <label for="nombreProducto" class="sr-only">Nombre del producto</label>
+        <input type="text" id="nombreProducto" placeholder="Nombre del producto">
+
+        <label for="precioProducto" class="sr-only">Precio</label>
+        <input type="number" id="precioProducto" placeholder="Precio">
+
+        <label for="descripcionProducto" class="sr-only">Descripción</label>
+        <textarea id="descripcionProducto" placeholder="Descripción"></textarea>
+
+        <h3>Categoría</h3>
+        <label for="categoriaProducto" class="sr-only">Categoría</label>
+<select id="categoriaProducto">
+  <option value="">-- Selecciona una categoría --</option>
+</select>
+
+
+        <h3>Imagen del producto</h3>
+        <label for="imagenProducto" class="sr-only">Imagen del producto</label>
+        <input type="file" id="imagenProducto" accept="image/*">
+
+        <button type="button" id="agregarProductoBtn">Agregar Producto</button>
+      </div>
+      <h3>Lista de Productos</h3>
+      <ul id="listaProductos"></ul>
+    </div>
+
+  <!-- Empresa -->
+<div class="card" id="empresa">
+  <h2>Gestión de la Empresa</h2>
+  <form id="formEmpresa" class="form-group">
+    <input type="hidden" id="empresaId">
+
+    <label for="nombreEmpresa">Nombre comercial</label>
+    <input type="text" id="nombreEmpresa" placeholder="Nombre comercial" required>
+
+    <label for="direccionEmpresa">Dirección</label>
+    <input type="text" id="direccionEmpresa" placeholder="Dirección">
+
+    <label for="telefonoEmpresa">Teléfono</label>
+    <input type="text" id="telefonoEmpresa" placeholder="Teléfono">
+
+    <label for="whatsappEmpresa">WhatsApp</label>
+    <input type="text" id="whatsappEmpresa" placeholder="WhatsApp">
+
+    <label for="emailEmpresa">Email de contacto</label>
+    <input type="email" id="emailEmpresa" placeholder="Email de contacto">
+
+    <label for="horariosEmpresa">Horarios de atención</label>
+    <input type="text" id="horariosEmpresa" placeholder="Horarios de atención">
+
+    <h3>📍 Ubicación</h3>
+    <label for="mapsEmpresa">Ubicación en Google Maps</label>
+    <input type="text" id="mapsEmpresa" placeholder="Pega aquí el iframe completo o solo el src">
+    <small style="color: #666; font-size: 0.9em; display:block; margin-bottom:10px;">
+      👉 En Google Maps usa <strong>Compartir → Insertar un mapa → Copiar HTML</strong>, y pega aquí el iframe o el valor de <code>src</code>.
+    </small>
+
+    <h3>🌐 Redes Sociales</h3>
+    <label for="facebookEmpresa">Facebook</label>
+    <input type="text" id="facebookEmpresa" placeholder="Facebook (URL)">
+
+    <label for="instagramEmpresa">Instagram</label>
+    <input type="text" id="instagramEmpresa" placeholder="Instagram (URL)">
+
+    <label for="tiktokEmpresa">TikTok</label>
+    <input type="text" id="tiktokEmpresa" placeholder="TikTok (URL)">
+
+    <h3>🏷️ Logo de la Empresa</h3>
+    <label for="logoEmpresa">Subir logo</label>
+    <input type="file" id="logoEmpresa" accept="image/*">
+    <img id="previewLogo" src="" alt="Logo actual"
+         style="max-width:150px; display:block; margin-top:10px;"
+         data-logo-path="">
+
+    <!-- Botón guardar -->
+    <button type="button" id="guardarEmpresaBtn">💾 Guardar Datos</button>
+  </form>
+
+  <!-- Vista previa -->
+  <div id="empresaPreview" style="margin-top:20px; display:none;"></div>
+</div>
+
+
+    <!-- Historia -->
+    <div class="card" id="historia">
+      <h2>Gestión de Historia</h2>
+      <input type="hidden" id="historiaId">
+      <div class="form-group">
+        <label for="tituloHistoria">Título</label>
+        <input type="text" id="tituloHistoria" placeholder="Título">
+
+        <label for="textoHistoria">Texto</label>
+        <textarea id="textoHistoria" placeholder="Texto de historia / misión / visión"></textarea>
+
+        <h3>Imagen de portada</h3>
+        <label for="imagenHistoria" class="sr-only">Imagen de portada</label>
+        <input type="file" id="imagenHistoria" accept="image/*">
+        <img id="previewHistoria" src="" style="max-width:150px; display:block; margin-top:10px;">
+
+        <button type="button" id="agregarHistoriaBtn">➕ Agregar Historia</button>
+        <button type="button" id="guardarEdicionHistoriaBtn" style="display:none;">💾 Guardar Cambios</button>
+      </div>
+      <h3>Lista de Historias</h3>
+      <ul id="listaHistorias"></ul>
+    </div>
+
+    <!-- Equipo -->
+    <div class="card" id="equipo">
+      <h2>Gestión de Equipo / Cocineros</h2>
+      <input type="hidden" id="equipoId">
+      <div class="form-group">
+        <label for="nombreMiembro">Nombre</label>
+        <input type="text" id="nombreMiembro" placeholder="Nombre del miembro">
+
+        <label for="puestoMiembro">Puesto</label>
+        <input type="text" id="puestoMiembro" placeholder="Puesto (Chef, Cocinero, etc.)">
+
+        <label for="descripcionMiembro">Descripción</label>
+        <textarea id="descripcionMiembro" placeholder="Descripción corta"></textarea>
+
+        <h3>Foto</h3>
+        <label for="fotoMiembro" class="sr-only">Foto del miembro</label>
+        <input type="file" id="fotoMiembro" accept="image/*">
+        <img id="previewMiembro" src="" style="max-width:150px; display:block; margin-top:10px;">
+
+        <button type="button" id="agregarMiembroBtn">➕ Agregar Miembro</button>
+        <button type="button" id="guardarEdicionMiembroBtn" style="display:none;">💾 Guardar Cambios</button>
+      </div>
+      <h3>Lista del Equipo</h3>
+      <ul id="listaEquipo"></ul>
+    </div>
+
+<!-- Promos -->
+<div class="card" id="promos">
+  <h2>Gestión de Promociones</h2>
+
+  <input type="hidden" id="promoId">
+
+  <div class="form-group">
+    <label for="nombrePromo">Nombre de la promoción</label>
+    <input type="text" id="nombrePromo" placeholder="Nombre de la promoción">
+
+    <label for="precioPromo">Precio</label>
+    <input type="number" id="precioPromo" placeholder="Precio" step="0.01">
+
+    <h3>Foto</h3>
+    <input type="file" id="fotoPromo" accept="image/*">
+    <img id="previewPromo" src="" style="max-width:150px; display:block; margin-top:10px;">
+
+    <h3>Fecha de vigencia</h3>
+    <input type="date" id="fechaVigenciaPromo">
+
+    <button type="button" id="agregarPromoBtn">➕ Agregar Promoción</button>
+    <button type="button" id="guardarEdicionPromoBtn" style="display:none;">💾 Guardar Cambios</button>
+  </div>
+
+  <!-- Lista completa de promociones -->
+  <h3>Lista de Promociones</h3>
+  <ul id="listaPromos"></ul>
+
+  <!-- Promoción activa -->
+  <h3>Promoción Activa</h3>
+  <div id="promoActivaContainer" class="promo-activa-box"></div>
+
+</div>
+
+
+    <!-- Testimonios -->
+    <div class="card" id="testimonios">
+      <h2>Testimonios</h2>
+      <input type="hidden" id="testimonioId">
+      <div class="form-group">
+        <label for="nombreTestimonio">Nombre del cliente</label>
+        <input type="text" id="nombreTestimonio" placeholder="Nombre del cliente">
+
+        <label for="opinionTestimonio">Opinión</label>
+        <textarea id="opinionTestimonio" placeholder="Opinión"></textarea>
+
+        <label for="estrellasTestimonio">Estrellas (1-5)</label>
+        <input type="number" id="estrellasTestimonio" min="1" max="5" placeholder="Estrellas (1-5)">
+
+        <button type="button" id="agregarTestimonioBtn">➕ Agregar Testimonio</button>
+        <button type="button" id="guardarEdicionTestimonioBtn" style="display:none;">💾 Guardar Cambios</button>
+      </div>
+      <h3>Lista de Testimonios</h3>
+      <ul id="listaTestimonios"></ul>
+    </div>
+
+    <!-- Noticias -->
+    <div class="card" id="noticias">
+      <h2>Noticias / Blog</h2>
+      <input type="hidden" id="noticiaId">
+      <div class="form-group">
+        <label for="tituloNoticia">Título</label>
+        <input type="text" id="tituloNoticia" placeholder="Título de la noticia">
+
+        <label for="contenidoNoticia">Contenido</label>
+        <textarea id="contenidoNoticia" placeholder="Contenido"></textarea>
+
+        <label for="fechaNoticia">Fecha</label>
+        <input type="date" id="fechaNoticia">
+
+        <label for="autorNoticia">Autor</label>
+        <input type="text" id="autorNoticia" placeholder="Autor">
+
+        <h3>Imagen</h3>
+        <label for="imagenNoticia" class="sr-only">Imagen</label>
+        <input type="file" id="imagenNoticia" accept="image/*">
+        <img id="previewNoticia" src="" style="max-width:150px; display:block; margin-top:10px;">
+
+        <button type="button" id="agregarNoticiaBtn">➕ Agregar Noticia</button>
+        <button type="button" id="guardarEdicionNoticiaBtn" style="display:none;">💾 Guardar Cambios</button>
+      </div>
+      <h3>Lista de Noticias</h3>
+      <ul id="listaNoticias"></ul>
+    </div>
+
+<!-- =====================
+     CONFIGURACIONES
+     ===================== -->
+<div class="card" id="config">
+  <h2>Configuraciones</h2>
+
+  <input type="hidden" id="configId">
+
+  <div class="form-group">
+    <label for="colorPrimario">Color Primario</label>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <input type="color" id="colorPrimario" value="#000000">
+      <div id="previewPrimario"
+           style="width:40px; height:40px; border:1px solid #ccc; background:#000000;">
+      </div>
+    </div>
+
+    <label for="colorSecundario">Color Secundario</label>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <input type="color" id="colorSecundario" value="#ffffff">
+      <div id="previewSecundario"
+           style="width:40px; height:40px; border:1px solid #ccc; background:#ffffff;">
+      </div>
+    </div>
+
+    <label for="textoFooter">Texto Footer</label>
+    <textarea id="textoFooter"></textarea>
+
+    <label for="avisoPrivacidad">Aviso de Privacidad</label>
+    <textarea id="avisoPrivacidad"></textarea>
+
+    <label for="terminosCondiciones">Términos y Condiciones</label>
+    <textarea id="terminosCondiciones"></textarea>
+  </div>
+
+  <div id="configPreview" style="margin-top:15px;"></div>
+
+  <div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
+    <button id="guardarConfigBtn">💾 Guardar Configuración</button>
+    <button id="editarConfigBtn" style="display:none;">✏️ Editar Configuración</button>
+    <button id="eliminarConfigBtn" style="display:none;">🗑️ Eliminar Configuración</button>
+  </div>
+</div>
+
+<hr style="margin:30px 0;">
+
+<!-- =====================
+     HORARIO DE ATENCIÓN
+     ===================== -->
+<section id="horario" class="card card-horario">
+  <h3>Horario de Atención</h3>
+
+  <input type="hidden" id="horario_id">
+
+  <!-- FORM -->
+  <div id="horarioForm">
+    <div class="horario-group">
+      <label for="horario_apertura">Apertura</label>
+      <input type="number" id="horario_apertura" min="0" max="23">
+    </div>
+
+    <div class="horario-group">
+      <label for="horario_cierre">Cierre</label>
+      <input type="number" id="horario_cierre" min="0" max="23">
+    </div>
+  </div>
+
+  <!-- PREVIEW -->
+  <div id="horarioPreview" style="display:none;">
+    <h4>Horario Actual</h4>
+    <p><strong>Apertura:</strong> <span id="preview_apertura"></span>:00</p>
+    <p><strong>Cierre:</strong> <span id="preview_cierre"></span>:00</p>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="horario-actions">
+    <button id="horario_guardar">💾 Guardar</button>
+    <button id="horario_editar" style="display:none;">✏️ Editar</button>
+  </div>
+</section>
+
+
+
+
+    <h3>🌐 Volver a Panel de Administrador</h3>
+    <button onclick="window.location.href='index.html'">🔁 Cargar Panel Administrador</button>
+  </section>
+
+  <!-- Logout -->
+  <div class="card" style="text-align:center;">
+    <button type="button" id="logoutBtn" class="logout">Cerrar sesión</button>
+  </div>
+
+</main>
+
+<script>
+  function scrollToSection(id) {
+    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+    if (window.innerWidth <= 768) toggleSidebar();
+  }
+  function mostrarLoader() {
+    document.getElementById("loaderOverlay").style.display = "flex";
+  }
+  function ocultarLoader() {
+    document.getElementById("loaderOverlay").style.display = "none";
+  }
+  function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.overlay');
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('active');
+  }
+</script>
+<script type="module" src="web_admin.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
