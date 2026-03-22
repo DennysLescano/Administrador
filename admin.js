@@ -1372,7 +1372,21 @@ function niceMax(v) {
   return 10 * pow;
 }
 
-// --- Eventos ---
+// -------------------- LOADER --------------------
+function mostrarLoader(texto = "Cargando...") {
+  const loader = document.getElementById("loaderOverlay");
+  const textoLoader = document.getElementById("loaderTexto");
+
+  if (loader) loader.style.display = "flex";
+  if (textoLoader) textoLoader.textContent = texto;
+}
+
+function ocultarLoader() {
+  const loader = document.getElementById("loaderOverlay");
+  if (loader) loader.style.display = "none";
+}
+
+// -------------------- EVENTOS --------------------
 function configurarEventos() {
   const ui = ensureUI();
   if (!ui) return;
@@ -1383,64 +1397,133 @@ function configurarEventos() {
   historialBtn?.addEventListener("click", () => abrirSelectorFechas(verHistorial));
   exportarBtn?.addEventListener("click", () => abrirSelectorFechas(exportarHistorial));
 
-  ui.searchInput?.addEventListener("input", () => renderProductos(ui.searchInput.value, ui.sortSelect.value));
-  ui.sortSelect?.addEventListener("change", () => renderProductos(ui.searchInput.value, ui.sortSelect.value));
+  ui.searchInput?.addEventListener("input", () =>
+    renderProductos(ui.searchInput.value, ui.sortSelect.value)
+  );
+
+  ui.sortSelect?.addEventListener("change", () =>
+    renderProductos(ui.searchInput.value, ui.sortSelect.value)
+  );
+
   ui.limpiarFiltrosBtn?.addEventListener("click", () => {
     ui.searchInput.value = "";
     ui.sortSelect.value = "nombre";
     renderProductos("", "nombre");
   });
 
-  ui.verRankingBtn?.addEventListener("click", () => abrirSelectorFechas(verRankingMasVendidos));
-  ui.verGananciasBtn?.addEventListener("click", () => abrirSelectorFechas(verGanancias));
-} 
+  ui.verRankingBtn?.addEventListener("click", () =>
+    abrirSelectorFechas(verRankingMasVendidos)
+  );
 
-// --- Permisos ---
-function verificarPermiso(accion) {
-  const user = auth.currentUser;
-  if (!user) return showToast("❌ No estás autenticado", "error");
-  verificarRolAdmin(user.uid).then(esAdmin => {
-    if (!esAdmin) return showToast("🚫 No tienes permiso", "error");
-    accion();
-  });
+  ui.verGananciasBtn?.addEventListener("click", () =>
+    abrirSelectorFechas(verGanancias)
+  );
 }
 
-// --- Login/Logout ---
+// -------------------- PERMISOS --------------------
+function verificarPermiso(accion) {
+  const user = auth.currentUser;
+
+  if (!user) {
+    return showToast("❌ No estás autenticado", "error");
+  }
+
+  mostrarLoader("Verificando permisos...");
+
+  verificarRolAdmin(user.uid)
+    .then((esAdmin) => {
+      if (!esAdmin) {
+        showToast("🚫 No tienes permiso", "error");
+        return;
+      }
+      accion();
+    })
+    .catch((error) => {
+      console.error(error);
+      showToast("❌ Error al verificar permisos", "error");
+    })
+    .finally(() => {
+      ocultarLoader();
+    });
+}
+
+// -------------------- LOGIN --------------------
 loginBtn?.addEventListener("click", () => {
   const email = (emailInput?.value || "").trim();
   const password = passwordInput?.value || "";
-  if (!email || !password) return showToast("⚠️ Ingresa correo y contraseña", "error");
+
+  if (!email || !password) {
+    return showToast("⚠️ Ingresa correo y contraseña", "error");
+  }
+
+  mostrarLoader("Iniciando sesión...");
+  loginBtn.disabled = true;
 
   signInWithEmailAndPassword(auth, email, password)
-    .then(() => { emailInput.value = ""; passwordInput.value = ""; showToast("✅ Sesión iniciada"); })
-    .catch(e => showToast("❌ " + e.message, "error"));
+    .then(() => {
+      emailInput.value = "";
+      passwordInput.value = "";
+      showToast("✅ Sesión iniciada", "success");
+    })
+    .catch((e) => {
+      console.error(e);
+      showToast("❌ Credenciales incorrectas", "error");
+    })
+    .finally(() => {
+      ocultarLoader();
+      loginBtn.disabled = false;
+    });
 });
 
+// -------------------- LOGOUT --------------------
 logoutBtn?.addEventListener("click", () => {
-  signOut(auth).then(() => showToast("✅ Sesión cerrada"));
+  mostrarLoader("Cerrando sesión...");
+
+  signOut(auth)
+    .then(() => {
+      showToast("✅ Sesión cerrada", "info");
+    })
+    .catch((e) => {
+      console.error(e);
+      showToast("❌ Error al cerrar sesión", "error");
+    })
+    .finally(() => {
+      ocultarLoader();
+    });
 });
 
-// --- Estado de sesión ---
+// -------------------- ESTADO DE SESIÓN --------------------
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    verificarRolAdmin(user.uid).then(esAdmin => {
-      if (esAdmin) {
-        loginSection.style.display = "none";
-        adminSection.style.display = "block";
-        ensureUI();
-        mostrarProductos();
-        configurarEventos();
-      } else {
-        showToast("🚫 No tienes permisos de administrador", "error");
-        signOut(auth);
-      }
-    });
+    mostrarLoader("Validando permisos...");
+
+    verificarRolAdmin(user.uid)
+      .then((esAdmin) => {
+        if (esAdmin) {
+          loginSection.style.display = "none";
+          adminSection.style.display = "block";
+
+          ensureUI();
+          mostrarProductos();
+          configurarEventos();
+        } else {
+          showToast("🚫 No tienes permisos de administrador", "error");
+          signOut(auth);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        showToast("❌ Error al verificar permisos", "error");
+      })
+      .finally(() => {
+        ocultarLoader();
+      });
+
   } else {
     loginSection.style.display = "block";
     adminSection.style.display = "none";
   }
 });
-
 // --- Eliminar historial (rango) ---
 
 if (eliminarHistorialBtn) {
